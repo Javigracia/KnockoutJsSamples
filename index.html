@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.4.2/knockout-min.js"></script>
+    <title>Knockout Samples</title>
+</head>
+<body>
+    <h1>El texto que se introduzca en la primera caja aparecera en la segunda</h1>
+    <label>Caja de Texto 1:</label>
+    <input data-bind="value: text1"/>
+    <label>Caja de Texto 2:</label>
+    <input data-bind="value: text2"/>
+    <hr/>
+    <h1>El texto de ambas cajas se unirá y se muestra a continuación.</h1>
+    <label>Caja de Texto 3:</label>
+    <input data-bind="value: text3"/>
+    <label>Caja de Texto 4:</label>
+    <input data-bind="value: text4"/>
+    <span data-bind="text: textJoined"></span>
+    <hr/>
+    <h1>Ejemplo usando la propiedad como si fuera un get set y una función.</h1>
+    <label>Caja de texto 5:</label>
+    <input data-bind="value: text5" type="text"/>
+    <input type="button" value="Texto a calcular" data-bind="click: medir">
+    <span data-bind="text: text6"></span>
+    <hr>
+    <h1>Ejemplo que muestra el número de letras del texto según escribas.</h1>
+    <label>Caja de Texto 6:</label>
+    <input type="text" data-bind="textInput: text7">
+    <span data-bind="text: text8"></span>
+    <hr>
+    <h1>Según se vaya escribiendo un determinado número de letras el texto cambia de color.</h1>
+    <label>Caja de texto 7:</label>
+    <input type="text" data-bind="textInput: text9">
+    <span id="textoColores" style="color:black" data-bind="text: text10"></span>
+</body>
+<script>
+        var ViewModel = function(tx1, tx3, tx4, tx5, tx7, tx9){
+        this.text1 = ko.observable(tx1);
+        this.text3 = ko.observable(tx3);
+        this.text4 = ko.observable(tx4);
+        this.text5 = ko.observable(tx5);
+        this.text6 = ko.observable();
+        this.text7 = ko.observable(tx7);
+        this.text9 = ko.observable(tx9);
+        this.text10 = ko.observable();
+        var that = this;
+        
+
+        //Ejemplo 1
+        this.text2 = ko.pureComputed(function(){
+            return this.text1();
+        }, this);
+        
+        //Ejemplo 2
+        this.textJoined = ko.pureComputed(function(){
+            return this.text3()+this.text4();
+        }, this);
+
+        //Ejemplo 3
+        this.medir = function(){
+            var textoActual = that.text5();
+            var textoLenght = textoActual.length;
+            that.text6(textoLenght);
+        };
+        
+        //Ejemplo 4
+        this.text8 = ko.computed(() => this.text7().length );
+        
+        //Ejemplo 5
+        this.text9.subscribe(function(newVal){
+            var colorText = newVal;
+            var sizeText = colorText.length;
+            this.text10(sizeText);
+            if(sizeText > 2){
+                document.getElementById("textoColores").style.color="red";
+            }
+            if(sizeText > 4){
+                document.getElementById("textoColores").style.color="blue";
+            }
+            if(sizeText > 6){
+                document.getElementById("textoColores").style.color="green";
+            }
+        },this);
+    };
+
+    ko.applyBindings(new ViewModel("","","","","",""));
+
+</script>
+</html>
